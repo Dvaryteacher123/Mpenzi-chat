@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TAFUTA MPENZI</title>
+    
+    <!-- ==========================================
+    CSS FILES
+    ========================================== -->
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/themes.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    
+    <!-- ==========================================
+    FIREBASE SDK - Direct Import
+    ========================================== -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+                "firebase/analytics": "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js",
+                "firebase/storage": "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- ==========================================
+    LOADING SCREEN
+    ========================================== -->
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="heart">❤️</div>
+            <h2>TAFUTA MPENZI</h2>
+            <p>Inapakia...</p>
+        </div>
+    </div>
+    
+    <!-- ==========================================
+    APP CONTAINER
+    ========================================== -->
+    <div id="app" style="display:none;"></div>
+    
+    <!-- ==========================================
+    MAIN SCRIPT - Firebase Integration
+    ========================================== -->
+    <script type="module">
+        // =============================================
+        // IMPORT FIREBASE SDKs
+        // =============================================
+        import { initializeApp } from "firebase/app";
+        import { getAnalytics } from "firebase/analytics";
+        import { 
+            getAuth, 
+            onAuthStateChanged,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            signOut,
+            sendPasswordResetEmail,
+            updateProfile,
+            updateEmail,
+            updatePassword
+        } from "firebase/auth";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            deleteDoc,
+            collection,
+            query,
+            where,
+            getDocs,
+            onSnapshot,
+            addDoc,
+            orderBy,
+            serverTimestamp,
+            arrayUnion,
+            arrayRemove,
+            increment,
+            limit
+        } from "firebase/firestore";
+        import {
+            getStorage,
+            ref,
+            uploadBytes,
+            uploadBytesResumable,
+            getDownloadURL,
+            deleteObject
+        } from "firebase/storage";
+        
+        // =============================================
+        // FIREBASE CONFIGURATION
+        // =============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCmwASW4XXQ3O0AvsCM_r1WLlrUmGjYVxI",
+            authDomain: "dvary-9a7d0.firebaseapp.com",
+            projectId: "dvary-9a7d0",
+            storageBucket: "dvary-9a7d0.firebasestorage.app",
+            messagingSenderId: "107370806066",
+            appId: "1:107370806066:web:4c2ce1e6f7b6c32909f52b",
+            measurementId: "G-07361LFJEP"
+        };
+        
+        // =============================================
+        // INITIALIZE FIREBASE
+        // =============================================
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        
+        // =============================================
+        // MAKE FIREBASE AVAILABLE GLOBALLY
+        // Hii inaruhusu files nyingine kutumia Firebase
+        // =============================================
+        window.firebaseApp = app;
+        window.firebaseAnalytics = analytics;
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
+        window.firebaseStorage = storage;
+        
+        // =============================================
+        // MAKE FIREBASE FUNCTIONS AVAILABLE GLOBALLY
+        // =============================================
+        window.firebaseFunctions = {
+            // Auth
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            signOut,
+            sendPasswordResetEmail,
+            updateProfile,
+            updateEmail,
+            updatePassword,
+            onAuthStateChanged,
+            
+            // Firestore
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            deleteDoc,
+            collection,
+            query,
+            where,
+            getDocs,
+            onSnapshot,
+            addDoc,
+            orderBy,
+            serverTimestamp,
+            arrayUnion,
+            arrayRemove,
+            increment,
+            limit,
+            
+            // Storage
+            ref,
+            uploadBytes,
+            uploadBytesResumable,
+            getDownloadURL,
+            deleteObject
+        };
+        
+        console.log('✅ Firebase initialized successfully!');
+        console.log('📁 Firebase App:', app.name);
+        console.log('📊 Analytics:', analytics.app.name);
+        console.log('🔐 Auth:', auth.app.name);
+        console.log('🗄️ Firestore:', db.app.name);
+        console.log('💾 Storage:', storage.app.name);
+        
+        // =============================================
+        // CHECK AUTHENTICATION STATE
+        // =============================================
+        onAuthStateChanged(auth, (user) => {
+            const loading = document.getElementById('loading-screen');
+            const appContainer = document.getElementById('app');
+            
+            if (user) {
+                // =========================================
+                // USER IS LOGGED IN
+                // Mpeleke kwenye chat.html
+                // =========================================
+                console.log('👤 User logged in:', user.uid);
+                console.log('📧 Email:', user.email);
+                console.log('📛 Name:', user.displayName);
+                
+                // Save user data globally
+                window.currentUser = {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL,
+                    phoneNumber: user.phoneNumber,
+                    emailVerified: user.emailVerified
+                };
+                
+                // Redirect to chat
+                window.location.href = 'chat.html';
+            } else {
+                // =========================================
+                // USER IS NOT LOGGED IN
+                // Onyesha landing page
+                // =========================================
+                console.log('👤 User not logged in');
+                
+                // Ficha loading
+                loading.style.display = 'none';
+                
+                // Onyesha app
+                appContainer.style.display = 'block';
+                
+                // Landing page content
+                appContainer.innerHTML = `
+                    <div class="landing">
+                        <div class="landing-content">
+                            <div class="logo">❤️</div>
+                            <h1>TAFUTA MPENZI</h1>
+                            <p>Ungana, zungumza na watu wapya na tafuta mtu wa kuongea naye.</p>
+                            
+                            <div class="buttons">
+                                <button onclick="window.location.href='login.html'" class="btn-primary">
+                                    Ingia
+                                </button>
+                                <button onclick="window.location.href='signup.html'" class="btn-secondary">
+                                    Jisajili
+                                </button>
+                            </div>
+                            
+                            <div class="footer-links">
+                                <button onclick="window.location.href='settings/language.html'">
+                                    🌐 Language
+                                </button>
+                                <button onclick="window.location.href='settings/themes.html'">
+                                    🎨 Theme
+                                </button>
+                            </div>
+                            
+                            <div style="margin-top: 20px; font-size: 12px; color: var(--text-tertiary);">
+                                <span>Powered by Firebase ❤️</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
