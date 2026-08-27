@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Chat - TAFUTA MPENZI</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/chat.css" />
+    <link rel="stylesheet" href="css/themes.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    
+    <!-- Firebase Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+                "firebase/analytics": "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js",
+                "firebase/storage": "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- ==========================================
+    MAIN CHAT LAYOUT
+    ========================================== -->
+    <div class="chat-app">
+        <!-- ===== HEADER ===== -->
+        <header class="chat-header">
+            <div class="header-left">
+                <div class="logo-text">❤️ TAFUTA MPENZI</div>
+            </div>
+            <div class="header-right">
+                <button class="btn-icon" id="searchBtn" title="Tafuta">
+                    🔍
+                </button>
+                <button class="btn-icon" id="notifBtn" title="Arifa">
+                    🔔
+                    <span class="badge" id="notifBadge" style="display:none;">0</span>
+                </button>
+                <button class="btn-icon" id="menuBtn" title="Menyu">
+                    ☰
+                </button>
+            </div>
+        </header>
+        
+        <!-- ===== SEARCH BAR ===== -->
+        <div class="search-container" id="searchContainer" style="display:none;">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Tafuta mtu au chat..."
+                    class="search-input"
+                />
+                <button class="search-close" id="searchClose">✕</button>
+            </div>
+        </div>
+        
+        <!-- ===== CHAT LIST ===== -->
+        <div class="chat-list-container" id="chatListContainer">
+            <div class="chat-list" id="chatList">
+                <!-- Chats will be loaded here -->
+                <div class="loading-chats">
+                    <div class="spinner"></div>
+                    <p>Inapakia mazungumzo...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ===== EMPTY STATE ===== -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+            <div class="empty-icon">💬</div>
+            <h3>Hakuna mazungumzo</h3>
+            <p>Anza mazungumzo mpya kwa kubonyeza <br />menyu na kuchagua "New Chat"</p>
+        </div>
+    </div>
+    
+    <!-- ==========================================
+    MENU OVERLAY & PANEL
+    ========================================== -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <div class="menu-panel" id="menuPanel">
+        <div class="menu-header">
+            <div class="user-info">
+                <div class="user-avatar" id="menuAvatar">
+                    <img id="menuAvatarImg" src="" alt="Profile" />
+                    <span id="menuAvatarText">U</span>
+                </div>
+                <div>
+                    <div class="user-name" id="menuUserName">Mtumiaji</div>
+                    <div class="user-status" id="menuUserStatus">Online</div>
+                </div>
+            </div>
+            <button class="menu-close" id="menuClose">✕</button>
+        </div>
+        
+        <ul class="menu-items">
+            <li>
+                <button class="menu-item" onclick="location.href='profile.html'">
+                    <span class="icon">👤</span>
+                    Profile
+                </button>
+            </li>
+            <li>
+                <button class="menu-item" onclick="location.href='users.html'">
+                    <span class="icon">👥</span>
+                    New Chat
+                </button>
+            </li>
+            <li>
+                <button class="menu-item" onclick="location.href='contacts.html'">
+                    <span class="icon">📇</span>
+                    Contacts
+                </button>
+            </li>
+            <li>
+                <button class="menu-item" onclick="location.href='status.html'">
+                    <span class="icon">📸</span>
+                    Status
+                </button>
+            </li>
+            <li>
+                <button class="menu-item" onclick="location.href='calls.html'">
+                    <span class="icon">📞</span>
+                    Calls
+                </button>
+            </li>
+            <li>
+                <button class="menu-item" onclick="location.href='notifications.html'">
+                    <span class="icon">🔔</span>
+                    Notifications
+                    <span class="badge" id="menuNotifBadge" style="display:none;">0</span>
+                </button>
+            </li>
+            
+            <li class="menu-divider"></li>
+            
+            <li>
+                <button class="menu-item" onclick="location.href='settings.html'">
+                    <span class="icon">⚙️</span>
+                    Settings
+                </button>
+            </li>
+            <li>
+                <button class="menu-item" onclick="location.href='settings/help.html'">
+                    <span class="icon">❓</span>
+                    Help & Support
+                </button>
+            </li>
+            
+            <li class="menu-divider"></li>
+            
+            <li>
+                <button class="menu-item" id="logoutBtn" style="color: var(--danger);">
+                    <span class="icon">🚪</span>
+                    Logout
+                </button>
+            </li>
+        </ul>
+        
+        <div class="menu-footer">
+            <span class="version">v1.0.0</span>
+        </div>
+    </div>
+    
+    <!-- ==========================================
+    JAVASCRIPT - Imeunganishwa na Firebase
+    ========================================== -->
+    <script type="module">
+        // ==========================================
+        // IMPORT FIREBASE SDKs
+        // ==========================================
+        import { initializeApp } from "firebase/app";
+        import { getAnalytics } from "firebase/analytics";
+        import { 
+            getAuth, 
+            onAuthStateChanged,
+            signOut
+        } from "firebase/auth";
+        import { 
+            getFirestore, 
+            doc, 
+            getDoc,
+            collection,
+            query,
+            where,
+            orderBy,
+            onSnapshot,
+            updateDoc,
+            serverTimestamp
+        } from "firebase/firestore";
+        import { 
+            getStorage
+        } from "firebase/storage";
+        
+        // ==========================================
+        // FIREBASE CONFIGURATION
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCmwASW4XXQ3O0AvsCM_r1WLlrUmGjYVxI",
+            authDomain: "dvary-9a7d0.firebaseapp.com",
+            projectId: "dvary-9a7d0",
+            storageBucket: "dvary-9a7d0.firebasestorage.app",
+            messagingSenderId: "107370806066",
+            appId: "1:107370806066:web:4c2ce1e6f7b6c32909f52b",
+            measurementId: "G-07361LFJEP"
+        };
+        
+        // ==========================================
+        // INITIALIZE FIREBASE
+        // ==========================================
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        
+        // ==========================================
+        // DOM ELEMENTS
+        // ==========================================
+        const chatList = document.getElementById('chatList');
+        const emptyState = document.getElementById('emptyState');
+        const menuBtn = document.getElementById('menuBtn');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuClose = document.getElementById('menuClose');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchContainer = document.getElementById('searchContainer');
+        const searchInput = document.getElementById('searchInput');
+        const searchClose = document.getElementById('searchClose');
+        const notifBtn = document.getElementById('notifBtn');
+        const notifBadge = document.getElementById('notifBadge');
+        const menuNotifBadge = document.getElementById('menuNotifBadge');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const menuAvatarImg = document.getElementById('menuAvatarImg');
+        const menuAvatarText = document.getElementById('menuAvatarText');
+        const menuUserName = document.getElementById('menuUserName');
+        const menuUserStatus = document.getElementById('menuUserStatus');
+        
+        // ==========================================
+        // STATE
+        // ==========================================
+        let currentUser = null;
+        let userData = null;
+        let conversations = [];
+        let unsubscribeChats = null;
+        
+        // ==========================================
+        // CHECK AUTHENTICATION
+        // ==========================================
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                // Not logged in - redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            currentUser = user;
+            await loadUserData(user.uid);
+            loadConversations(user.uid);
+            updateMenuUserInfo();
+        });
+        
+        // ==========================================
+        // LOAD USER DATA
+        // ==========================================
+        async function loadUserData(uid) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', uid));
+                if (userDoc.exists()) {
+                    userData = userDoc.data();
+                    return userData;
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+            return null;
+        }
+        
+        // ==========================================
+        // UPDATE MENU USER INFO
+        // ==========================================
+        function updateMenuUserInfo() {
+            if (!userData) return;
+            
+            menuUserName.textContent = userData.fullName || 'Mtumiaji';
+            menuUserStatus.textContent = userData.onlineStatus ? '🟢 Online' : '⚪ Offline';
+            
+            if (userData.profilePhoto) {
+                menuAvatarImg.src = userData.profilePhoto;
+                menuAvatarImg.style.display = 'block';
+                menuAvatarText.style.display = 'none';
+            } else {
+                menuAvatarImg.style.display = 'none';
+                menuAvatarText.style.display = 'flex';
+                const initial = (userData.fullName || 'U')[0].toUpperCase();
+                menuAvatarText.textContent = initial;
+            }
+        }
+        
+        // ==========================================
+        // LOAD CONVERSATIONS (Real-time)
+        // ==========================================
+        function loadConversations(uid) {
+            // Clear previous listener
+            if (unsubscribeChats) {
+                unsubscribeChats();
+            }
+            
+            // Query conversations where user is participant
+            const q = query(
+                collection(db, 'conversations'),
+                where('participants', 'array-contains', uid),
+                orderBy('updatedAt', 'desc')
+            );
+            
+            unsubscribeChats = onSnapshot(q, (snapshot) => {
+                conversations = [];
+                
+                if (snapshot.empty) {
+                    showEmptyState(true);
+                    return;
+                }
+                
+                showEmptyState(false);
+                
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const conversation = {
+                        id: doc.id,
+                        ...data
+                    };
+                    conversations.push(conversation);
+                });
+                
+                renderChatList();
+            }, (error) => {
+                console.error('Error loading conversations:', error);
+            });
+        }
+        
+        // ==========================================
+        // RENDER CHAT LIST
+        // ==========================================
+        function renderChatList() {
+            if (!chatList) return;
+            
+            if (conversations.length === 0) {
+                showEmptyState(true);
+                return;
+            }
+            
+            showEmptyState(false);
+            
+            let html = '';
+            
+            conversations.forEach((conversation) => {
+                // Get other participant
+                const otherUserId = conversation.participants.find(id => id !== currentUser.uid);
+                const lastMessage = conversation.lastMessage || '';
+                const lastMessageTime = conversation.lastMessageTime || '';
+                const unreadCount = conversation.unreadCount?.[currentUser.uid] || 0;
+                const isPinned = conversation.pinned?.[currentUser.uid] || false;
+                
+                html += `
+                    <div class="chat-item ${isPinned ? 'pinned' : ''}" 
+                         data-id="${conversation.id}" 
+                         onclick="openConversation('${conversation.id}')">
+                        <div class="avatar">
+                            <img src="${getUserAvatar(otherUserId)}" alt="Avatar" />
+                            <div class="online-dot ${getUserStatus(otherUserId)}"></div>
+                        </div>
+                        <div class="chat-info">
+                            <div class="name">${getUserName(otherUserId)}</div>
+                            <div class="message">${lastMessage || 'Anza mazungumzo...'}</div>
+                        </div>
+                        <div class="chat-meta">
+                            <div class="time">${formatTime(lastMessageTime)}</div>
+                            ${unreadCount > 0 ? `<div class="unread">${unreadCount}</div>` : ''}
+                            ${isPinned ? '<div class="pinned-icon">📌</div>' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            chatList.innerHTML = html;
+        }
+        
+        // ==========================================
+        // HELPER FUNCTIONS
+        // ==========================================
+        function getUserName(userId) {
+            // In production, fetch from user data cache
+            // For now, return placeholder
+            const names = {
+                'user1': 'John Doe',
+                'user2': 'Jane Smith'
+            };
+            return names[userId] || 'Mtumiaji';
+        }
+        
+        function getUserAvatar(userId) {
+            // In production, fetch from user data cache
+            return `https://ui-avatars.com/api/?name=${getUserName(userId)}&background=E9405F&color=fff&size=50`;
+        }
+        
+        function getUserStatus(userId) {
+            // In production, fetch from user data cache
+            return Math.random() > 0.5 ? 'online' : 'offline';
+        }
+        
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 3600000) {
+                return Math.floor(diff / 60000) + 'm';
+            } else if (diff < 86400000) {
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } else if (diff < 604800000) {
+                return date.toLocaleDateString([], { weekday: 'short' });
+            } else {
+                return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            }
+        }
+        
+        function showEmptyState(show) {
+            if (emptyState) {
+                emptyState.style.display = show ? 'flex' : 'none';
+            }
+            if (chatList) {
+                chatList.style.display = show ? 'none' : 'block';
+            }
+        }
+        
+        // ==========================================
+        // OPEN CONVERSATION (Global function)
+        // ==========================================
+        window.openConversation = function(conversationId) {
+            window.location.href = `chat/conversation.html?id=${conversationId}`;
+        };
+        
+        // ==========================================
+        // MENU TOGGLE
+        // ==========================================
+        function toggleMenu(show) {
+            if (show !== undefined) {
+                menuPanel.classList.toggle('active', show);
+                menuOverlay.classList.toggle('active', show);
+                document.body.style.overflow = show ? 'hidden' : '';
+                return;
+            }
+            
+            const isOpen = menuPanel.classList.contains('active');
+            menuPanel.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            document.body.style.overflow = isOpen ? '' : 'hidden';
+        }
+        
+        menuBtn.addEventListener('click', () => toggleMenu());
+        menuClose.addEventListener('click', () => toggleMenu(false));
+        menuOverlay.addEventListener('click', () => toggleMenu(false));
+        
+        // ==========================================
+        // SEARCH TOGGLE
+        // ==========================================
+        searchBtn.addEventListener('click', () => {
+            const isOpen = searchContainer.style.display === 'block';
+            searchContainer.style.display = isOpen ? 'none' : 'block';
+            if (!isOpen) {
+                searchInput.focus();
+            }
+        });
+        
+        searchClose.addEventListener('click', () => {
+            searchContainer.style.display = 'none';
+            searchInput.value = '';
+        });
+        
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const items = chatList?.querySelectorAll('.chat-item');
+            if (!items) return;
+            
+            items.forEach(item => {
+                const name = item.querySelector('.name')?.textContent?.toLowerCase() || '';
+                const message = item.querySelector('.message')?.textContent?.toLowerCase() || '';
+                const match = name.includes(query) || message.includes(query);
+                item.style.display = match ? '' : 'none';
+            });
+        });
+        
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+        logoutBtn.addEventListener('click', async () => {
+            if (confirm('Je, una uhakika unataka kutoka?')) {
+                try {
+                    // Update online status
+                    if (currentUser) {
+                        await updateDoc(doc(db, 'users', currentUser.uid), {
+                            onlineStatus: false,
+                            lastSeen: new Date().toISOString()
+                        });
+                    }
+                    
+                    await signOut(auth);
+                    window.location.href = 'index.html';
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    alert('Imeshindwa kutoka. Tafadhali jaribu tena.');
+                }
+            }
+        });
+        
+        // ==========================================
+        // NOTIFICATIONS
+        // ==========================================
+        notifBtn.addEventListener('click', () => {
+            window.location.href = 'notifications.html';
+        });
+        
+        // ==========================================
+        // LOAD NOTIFICATIONS COUNT
+        // ==========================================
+        function loadNotificationCount() {
+            if (!currentUser) return;
+            
+            // In production, load from Firestore
+            // For now, simulate
+            const count = 3;
+            if (count > 0) {
+                notifBadge.textContent = count;
+                notifBadge.style.display = 'flex';
+                menuNotifBadge.textContent = count;
+                menuNotifBadge.style.display = 'flex';
+            } else {
+                notifBadge.style.display = 'none';
+                menuNotifBadge.style.display = 'none';
+            }
+        }
+        
+        // ==========================================
+        // KEYBOARD SHORTCUTS
+        // ==========================================
+        document.addEventListener('keydown', (e) => {
+            // Escape to close menu
+            if (e.key === 'Escape') {
+                if (menuPanel.classList.contains('active')) {
+                    toggleMenu(false);
+                }
+                if (searchContainer.style.display === 'block') {
+                    searchContainer.style.display = 'none';
+                    searchInput.value = '';
+                }
+            }
+            
+            // Ctrl+K to search
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                searchBtn.click();
+            }
+        });
+        
+        // ==========================================
+        // INIT
+        // ==========================================
+        console.log('✅ Chat page loaded successfully');
+        console.log('🔥 Firebase initialized with config:', firebaseConfig);
+    </script>
+</body>
+</html>
