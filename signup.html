@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Jisajili - TAFUTA MPENZI</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/auth.css" />
+    <link rel="stylesheet" href="css/themes.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    
+    <!-- Firebase Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+                "firebase/analytics": "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js",
+                "firebase/storage": "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- ==========================================
+    MAIN CONTAINER
+    ========================================== -->
+    <div class="auth-container">
+        <div class="auth-card animate-slide-up">
+            <!-- Logo -->
+            <div class="auth-logo">
+                <div class="logo-icon">❤️</div>
+                <h1>TAFUTA MPENZI</h1>
+                <p class="auth-subtitle">Jiunge nasi! Unda akaunti mpya</p>
+            </div>
+            
+            <!-- ==========================================
+            SIGNUP FORM
+            ========================================== -->
+            <form id="signupForm" class="auth-form">
+                <!-- Full Name -->
+                <div class="input-group">
+                    <label for="fullName">
+                        Jina kamili
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <span class="icon">👤</span>
+                        <input 
+                            type="text" 
+                            id="fullName" 
+                            placeholder="Enter your full name"
+                            required
+                            autocomplete="name"
+                        />
+                    </div>
+                    <div class="input-error" id="fullNameError"></div>
+                </div>
+                
+                <!-- Username -->
+                <div class="input-group">
+                    <label for="username">
+                        Jina la mtumiaji
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <span class="icon">@</span>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            placeholder="Choose a unique username"
+                            required
+                            autocomplete="username"
+                        />
+                    </div>
+                    <div class="input-help">Herufi 3-20, alphanumeric na underscore tu</div>
+                    <div class="input-error" id="usernameError"></div>
+                </div>
+                
+                <!-- Email -->
+                <div class="input-group">
+                    <label for="email">
+                        Barua pepe
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <span class="icon">📧</span>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            placeholder="Enter your email address"
+                            required
+                            autocomplete="email"
+                        />
+                    </div>
+                    <div class="input-error" id="emailError"></div>
+                </div>
+                
+                <!-- Phone Number -->
+                <div class="input-group">
+                    <label for="phoneNumber">
+                        Nambari ya simu
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <span class="icon">📱</span>
+                        <input 
+                            type="tel" 
+                            id="phoneNumber" 
+                            placeholder="+255 712 345 678"
+                            required
+                            autocomplete="tel"
+                        />
+                    </div>
+                    <div class="input-help">Ingiza nambari yako ya simu pamoja na msimbo wa nchi</div>
+                    <div class="input-error" id="phoneError"></div>
+                </div>
+                
+                <!-- Password -->
+                <div class="input-group">
+                    <label for="password">
+                        Nenosiri
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <span class="icon">🔒</span>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            placeholder="Create a strong password"
+                            required
+                            autocomplete="new-password"
+                            minlength="6"
+                        />
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            👁️
+                        </button>
+                    </div>
+                    <div class="input-help">Lazima iwe na angalau herufi 6</div>
+                    <div class="input-error" id="passwordError"></div>
+                </div>
+                
+                <!-- Confirm Password -->
+                <div class="input-group">
+                    <label for="confirmPassword">
+                        Thibitisha nenosiri
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <span class="icon">🔐</span>
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            placeholder="Confirm your password"
+                            required
+                            autocomplete="new-password"
+                        />
+                    </div>
+                    <div class="input-error" id="confirmError"></div>
+                </div>
+                
+                <!-- Country -->
+                <div class="input-group">
+                    <label for="country">Nchi</label>
+                    <div class="input-with-icon">
+                        <span class="icon">🌍</span>
+                        <select id="country">
+                            <option value="">Chagua nchi yako</option>
+                            <option value="Tanzania">🇹🇿 Tanzania</option>
+                            <option value="Kenya">🇰🇪 Kenya</option>
+                            <option value="Uganda">🇺🇬 Uganda</option>
+                            <option value="Rwanda">🇷🇼 Rwanda</option>
+                            <option value="Burundi">🇧🇮 Burundi</option>
+                            <option value="South Africa">🇿🇦 South Africa</option>
+                            <option value="Nigeria">🇳🇬 Nigeria</option>
+                            <option value="Ghana">🇬🇭 Ghana</option>
+                            <option value="USA">🇺🇸 USA</option>
+                            <option value="UK">🇬🇧 UK</option>
+                            <option value="Other">🌐 Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Gender -->
+                <div class="input-group">
+                    <label for="gender">Jinsia</label>
+                    <div class="input-with-icon">
+                        <span class="icon">⚤</span>
+                        <select id="gender">
+                            <option value="">Chagua jinsia</option>
+                            <option value="Male">👨 Male</option>
+                            <option value="Female">👩 Female</option>
+                            <option value="Other">🌈 Other</option>
+                            <option value="Prefer not to say">🤫 Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Bio -->
+                <div class="input-group">
+                    <label for="bio">Maelezo mafupi (Bio)</label>
+                    <div class="input-with-icon">
+                        <span class="icon">📝</span>
+                        <textarea 
+                            id="bio" 
+                            placeholder="Tell us about yourself (max 200 characters)"
+                            maxlength="200"
+                            rows="3"
+                        ></textarea>
+                    </div>
+                    <div class="input-help">
+                        <span id="bioCount">0</span> / 200 characters
+                    </div>
+                </div>
+                
+                <!-- Date of Birth -->
+                <div class="input-group">
+                    <label for="dob">Tarehe ya kuzaliwa</label>
+                    <div class="input-with-icon">
+                        <span class="icon">🎂</span>
+                        <input type="date" id="dob" />
+                    </div>
+                </div>
+                
+                <!-- Terms & Conditions -->
+                <div class="auth-terms">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="terms" required />
+                        <span>
+                            Nakubali 
+                            <a href="#" onclick="alert('Terms and conditions will be shown here')">Masharti na Sheria</a>
+                            na 
+                            <a href="#" onclick="alert('Privacy policy will be shown here')">Sera ya Faragha</a>
+                        </span>
+                    </label>
+                    <div class="input-error" id="termsError"></div>
+                </div>
+                
+                <!-- Signup Button -->
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="signupBtn">
+                    <span id="signupText">Jisajili</span>
+                    <span id="signupSpinner" class="spinner" style="display:none;"></span>
+                </button>
+                
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <span>au</span>
+                </div>
+                
+                <!-- Login Link -->
+                <div class="auth-footer">
+                    <p>Tayari una akaunti? <a href="login.html" class="auth-link">Ingia sasa</a></p>
+                </div>
+            </form>
+            
+            <!-- ==========================================
+            MESSAGE CONTAINER
+            ========================================== -->
+            <div id="messageContainer" style="display:none;" class="message-container">
+                <div id="messageText" class="message-text"></div>
+            </div>
+            
+            <!-- ==========================================
+            FOOTER
+            ========================================== -->
+            <div class="auth-footer-links">
+                <button onclick="location.href='settings/language.html'" class="footer-link">
+                    🌐 Language
+                </button>
+                <span class="dot">•</span>
+                <button onclick="location.href='settings/themes.html'" class="footer-link">
+                    🎨 Theme
+                </button>
+                <span class="dot">•</span>
+                <button onclick="location.href='settings/help.html'" class="footer-link">
+                    ❓ Help
+                </button>
+            </div>
+            
+            <p class="auth-version">v1.0.0</p>
+        </div>
+    </div>
+    
+    <!-- ==========================================
+    JAVASCRIPT - Imeunganishwa na Firebase
+    ========================================== -->
+    <script type="module">
+        // ==========================================
+        // IMPORT FIREBASE SDKs
+        // ==========================================
+        import { initializeApp } from "firebase/app";
+        import { getAnalytics } from "firebase/analytics";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword,
+            updateProfile,
+            sendEmailVerification,
+            onAuthStateChanged
+        } from "firebase/auth";
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            getDoc,
+            collection,
+            query,
+            where,
+            getDocs,
+            serverTimestamp
+        } from "firebase/firestore";
+        import { 
+            getStorage,
+            ref,
+            uploadBytes,
+            getDownloadURL
+        } from "firebase/storage";
+        
+        // ==========================================
+        // FIREBASE CONFIGURATION
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCmwASW4XXQ3O0AvsCM_r1WLlrUmGjYVxI",
+            authDomain: "dvary-9a7d0.firebaseapp.com",
+            projectId: "dvary-9a7d0",
+            storageBucket: "dvary-9a7d0.firebasestorage.app",
+            messagingSenderId: "107370806066",
+            appId: "1:107370806066:web:4c2ce1e6f7b6c32909f52b",
+            measurementId: "G-07361LFJEP"
+        };
+        
+        // ==========================================
+        // INITIALIZE FIREBASE
+        // ==========================================
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        
+        // ==========================================
+        // DOM ELEMENTS
+        // ==========================================
+        const form = document.getElementById('signupForm');
+        const fullName = document.getElementById('fullName');
+        const username = document.getElementById('username');
+        const email = document.getElementById('email');
+        const phoneNumber = document.getElementById('phoneNumber');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const country = document.getElementById('country');
+        const gender = document.getElementById('gender');
+        const bio = document.getElementById('bio');
+        const dob = document.getElementById('dob');
+        const terms = document.getElementById('terms');
+        const signupBtn = document.getElementById('signupBtn');
+        const signupText = document.getElementById('signupText');
+        const signupSpinner = document.getElementById('signupSpinner');
+        const togglePassword = document.getElementById('togglePassword');
+        const messageContainer = document.getElementById('messageContainer');
+        const messageText = document.getElementById('messageText');
+        const bioCount = document.getElementById('bioCount');
+        
+        // Error elements
+        const fullNameError = document.getElementById('fullNameError');
+        const usernameError = document.getElementById('usernameError');
+        const emailError = document.getElementById('emailError');
+        const phoneError = document.getElementById('phoneError');
+        const passwordError = document.getElementById('passwordError');
+        const confirmError = document.getElementById('confirmError');
+        const termsError = document.getElementById('termsError');
+        
+        // ==========================================
+        // CHECK IF ALREADY LOGGED IN
+        // ==========================================
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = 'chat.html';
+            }
+        });
+        
+        // ==========================================
+        // TOGGLE PASSWORD VISIBILITY
+        // ==========================================
+        togglePassword.addEventListener('click', () => {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            togglePassword.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+        
+        // ==========================================
+        // BIO CHARACTER COUNT
+        // ==========================================
+        bio.addEventListener('input', () => {
+            const count = bio.value.length;
+            bioCount.textContent = count;
+            if (count > 180) {
+                bioCount.style.color = 'var(--warning)';
+            } else if (count > 190) {
+                bioCount.style.color = 'var(--danger)';
+            } else {
+                bioCount.style.color = 'var(--text-tertiary)';
+            }
+        });
+        
+        // ==========================================
+        // SHOW MESSAGE
+        // ==========================================
+        function showMessage(message, type = 'error') {
+            messageContainer.style.display = 'block';
+            messageContainer.className = `message-container ${type}`;
+            messageText.textContent = message;
+            
+            setTimeout(() => {
+                messageContainer.style.display = 'none';
+            }, 5000);
+        }
+        
+        // ==========================================
+        // CLEAR ERRORS
+        // ==========================================
+        function clearErrors() {
+            document.querySelectorAll('.input-error').forEach(el => {
+                el.textContent = '';
+                el.classList.remove('visible');
+            });
+            document.querySelectorAll('.input-group input, .input-group select, .input-group textarea').forEach(el => {
+                el.classList.remove('error', 'success');
+            });
+            messageContainer.style.display = 'none';
+        }
+        
+        // ==========================================
+        // VALIDATE FORM
+        // ==========================================
+        async function validateForm() {
+            let isValid = true;
+            clearErrors();
+            
+            // Full Name
+            if (!fullName.value.trim()) {
+                fullNameError.textContent = 'Tafadhali ingiza jina lako kamili';
+                fullNameError.classList.add('visible');
+                fullName.classList.add('error');
+                isValid = false;
+            } else if (fullName.value.trim().length < 2) {
+                fullNameError.textContent = 'Jina lazima liwe na angalau herufi 2';
+                fullNameError.classList.add('visible');
+                fullName.classList.add('error');
+                isValid = false;
+            }
+            
+            // Username
+            const usernameValue = username.value.trim();
+            if (!usernameValue) {
+                usernameError.textContent = 'Tafadhali chagua jina la mtumiaji';
+                usernameError.classList.add('visible');
+                username.classList.add('error');
+                isValid = false;
+            } else if (!/^[a-zA-Z0-9_]{3,20}$/.test(usernameValue)) {
+                usernameError.textContent = 'Jina la mtumiaji lazima liwe na herufi 3-20 (alphanumeric na underscore tu)';
+                usernameError.classList.add('visible');
+                username.classList.add('error');
+                isValid = false;
+            } else {
+                // Check if username already exists
+                try {
+                    const q = query(collection(db, 'users'), where('username', '==', usernameValue));
+                    const querySnapshot = await getDocs(q);
+                    if (!querySnapshot.empty) {
+                        usernameError.textContent = 'Jina hili la mtumiaji tayari limetumika';
+                        usernameError.classList.add('visible');
+                        username.classList.add('error');
+                        isValid = false;
+                    }
+                } catch (error) {
+                    console.error('Username check error:', error);
+                }
+            }
+            
+            // Email
+            const emailValue = email.value.trim();
+            if (!emailValue) {
+                emailError.textContent = 'Tafadhali ingiza barua pepe yako';
+                emailError.classList.add('visible');
+                email.classList.add('error');
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+                emailError.textContent = 'Tafadhali ingiza barua pepe halali';
+                emailError.classList.add('visible');
+                email.classList.add('error');
+                isValid = false;
+            } else {
+                // Check if email already exists
+                try {
+                    const q = query(collection(db, 'users'), where('email', '==', emailValue));
+                    const querySnapshot = await getDocs(q);
+                    if (!querySnapshot.empty) {
+                        emailError.textContent = 'Barua pepe hii tayari imesajiliwa';
+                        emailError.classList.add('visible');
+                        email.classList.add('error');
+                        isValid = false;
+                    }
+                } catch (error) {
+                    console.error('Email check error:', error);
+                }
+            }
+            
+            // Phone Number
+            const phoneValue = phoneNumber.value.trim();
+            if (!phoneValue) {
+                phoneError.textContent = 'Tafadhali ingiza nambari yako ya simu';
+                phoneError.classList.add('visible');
+                phone.classList.add('error');
+                isValid = false;
+            } else if (!/^\+?[0-9]{7,15}$/.test(phoneValue.replace(/\s/g, ''))) {
+                phoneError.textContent = 'Tafadhali ingiza nambari halali ya simu';
+                phoneError.classList.add('visible');
+                phone.classList.add('error');
+                isValid = false;
+            } else {
+                // Check if phone already exists
+                try {
+                    const q = query(collection(db, 'users'), where('phoneNumber', '==', phoneValue));
+                    const querySnapshot = await getDocs(q);
+                    if (!querySnapshot.empty) {
+                        phoneError.textContent = 'Nambari hii ya simu tayari imesajiliwa';
+                        phoneError.classList.add('visible');
+                        phone.classList.add('error');
+                        isValid = false;
+                    }
+                } catch (error) {
+                    console.error('Phone check error:', error);
+                }
+            }
+            
+            // Password
+            if (!password.value) {
+                passwordError.textContent = 'Tafadhali unda nenosiri';
+                passwordError.classList.add('visible');
+                password.classList.add('error');
+                isValid = false;
+            } else if (password.value.length < 6) {
+                passwordError.textContent = 'Nenosiri lazima liwe na angalau herufi 6';
+                passwordError.classList.add('visible');
+                password.classList.add('error');
+                isValid = false;
+            }
+            
+            // Confirm Password
+            if (!confirmPassword.value) {
+                confirmError.textContent = 'Tafadhali thibitisha nenosiri lako';
+                confirmError.classList.add('visible');
+                confirmPassword.classList.add('error');
+                isValid = false;
+            } else if (password.value !== confirmPassword.value) {
+                confirmError.textContent = 'Nenosiri hazifanani';
+                confirmError.classList.add('visible');
+                confirmPassword.classList.add('error');
+                isValid = false;
+            }
+            
+            // Terms
+            if (!terms.checked) {
+                termsError.textContent = 'Tafadhali kubali masharti na sheria';
+                termsError.classList.add('visible');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // ==========================================
+        // HANDLE SIGNUP
+        // ==========================================
+        async function handleSignup(e) {
+            e.preventDefault();
+            
+            // Validate form
+            const isValid = await validateForm();
+            if (!isValid) {
+                return;
+            }
+            
+            // Show loading state
+            signupBtn.disabled = true;
+            signupText.textContent = 'Inajisajili...';
+            signupSpinner.style.display = 'inline-block';
+            
+            try {
+                const emailValue = email.value.trim();
+                const passwordValue = password.value;
+                const fullNameValue = fullName.value.trim();
+                const usernameValue = username.value.trim();
+                const phoneValue = phoneNumber.value.trim();
+                const countryValue = country.value;
+                const genderValue = gender.value;
+                const bioValue = bio.value.trim();
+                const dobValue = dob.value;
+                
+                // Create user with Firebase Auth
+                const userCredential = await createUserWithEmailAndPassword(
+                    auth,
+                    emailValue,
+                    passwordValue
+                );
+                
+                const user = userCredential.user;
+                
+                // Update profile with display name
+                await updateProfile(user, {
+                    displayName: fullNameValue
+                });
+                
+                // Send email verification
+                await sendEmailVerification(user);
+                
+                // Prepare user data for Firestore
+                const userData = {
+                    uid: user.uid,
+                    fullName: fullNameValue,
+                    username: usernameValue,
+                    email: emailValue,
+                    phoneNumber: phoneValue,
+                    country: countryValue || '',
+                    gender: genderValue || '',
+                    bio: bioValue || '',
+                    dateOfBirth: dobValue || null,
+                    profilePhoto: null,
+                    onlineStatus: true,
+                    lastSeen: new Date().toISOString(),
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp(),
+                    privacySettings: {
+                        profileVisibility: 'public',
+                        lastSeenVisibility: 'everyone',
+                        onlineStatusVisibility: 'everyone',
+                        readReceipts: true,
+                        contactPermission: 'everyone'
+                    },
+                    notificationSettings: {
+                        messages: true,
+                        calls: true,
+                        status: true,
+                        sound: true,
+                        vibration: true
+                    },
+                    isVerified: false,
+                    isBlocked: false
+                };
+                
+                // Save user data to Firestore
+                await setDoc(doc(db, 'users', user.uid), userData);
+                
+                // Show success message
+                showMessage(
+                    'Akaunti imeundwa! Tafadhali angalia barua pepe yako kwa uthibitisho.',
+                    'success'
+                );
+                
+                // Redirect to chat after short delay
+                setTimeout(() => {
+                    window.location.href = 'chat.html';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                
+                // Handle Firebase errors
+                let errorMessage = 'Imeshindwa kujisajili. Tafadhali jaribu tena.';
+                
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'Barua pepe hii tayari imesajiliwa. Tafadhali ingia au tumia barua pepe nyingine.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Barua pepe si sahihi. Tafadhali ingiza barua pepe halali.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'Nenosiri ni dhaifu. Tafadhali unda nenosiri lenye nguvu zaidi.';
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = 'Tatizo la mtandao. Tafadhali hakikisha umeunganishwa kwenye intaneti.';
+                        break;
+                    default:
+                        errorMessage = error.message || 'Imeshindwa kujisajili. Tafadhali jaribu tena.';
+                }
+                
+                showMessage(errorMessage, 'error');
+                
+                // Re-enable button
+                signupBtn.disabled = false;
+                signupText.textContent = 'Jisajili';
+                signupSpinner.style.display = 'none';
+            }
+        }
+        
+        // ==========================================
+        // REAL-TIME VALIDATION
+        // ==========================================
+        fullName.addEventListener('input', () => {
+            if (fullName.value.trim().length >= 2) {
+                fullNameError.classList.remove('visible');
+                fullName.classList.remove('error');
+            }
+        });
+        
+        username.addEventListener('input', () => {
+            const val = username.value.trim();
+            if (/^[a-zA-Z0-9_]{3,20}$/.test(val)) {
+                usernameError.classList.remove('visible');
+                username.classList.remove('error');
+            } else if (val.length > 0) {
+                usernameError.textContent = 'Herufi 3-20, alphanumeric na underscore tu';
+                usernameError.classList.add('visible');
+                username.classList.add('error');
+            }
+        });
+        
+        email.addEventListener('input', () => {
+            if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+                emailError.classList.remove('visible');
+                email.classList.remove('error');
+            }
+        });
+        
+        phoneNumber.addEventListener('input', () => {
+            const val = phoneNumber.value.trim().replace(/\s/g, '');
+            if (/^\+?[0-9]{7,15}$/.test(val)) {
+                phoneError.classList.remove('visible');
+                phone.classList.remove('error');
+            }
+        });
+        
+        password.addEventListener('input', () => {
+            if (password.value.length >= 6) {
+                passwordError.classList.remove('visible');
+                password.classList.remove('error');
+            }
+        });
+        
+        confirmPassword.addEventListener('input', () => {
+            if (confirmPassword.value === password.value && confirmPassword.value.length > 0) {
+                confirmError.classList.remove('visible');
+                confirmPassword.classList.remove('error');
+            } else if (confirmPassword.value.length > 0) {
+                confirmError.textContent = 'Nenosiri hazifanani';
+                confirmError.classList.add('visible');
+                confirmPassword.classList.add('error');
+            }
+        });
+        
+        terms.addEventListener('change', () => {
+            if (terms.checked) {
+                termsError.classList.remove('visible');
+            }
+        });
+        
+        // ==========================================
+        // FORM SUBMIT
+        // ==========================================
+        form.addEventListener('submit', handleSignup);
+        
+        // ==========================================
+        // KEYBOARD SHORTCUTS
+        // ==========================================
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                form.dispatchEvent(new Event('submit'));
+            }
+        });
+        
+        console.log('✅ Signup page loaded successfully');
+        console.log('🔥 Firebase initialized with config:', firebaseConfig);
+    </script>
+</body>
+  </html>
